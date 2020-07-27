@@ -19,6 +19,8 @@ extern char _binary_lib_loop_js_end[];
 extern char _binary_lib_loop_js_start[];
 extern char _binary_lib_require_js_end[];
 extern char _binary_lib_require_js_start[];
+extern char _binary_debugger_js_end[];
+extern char _binary_debugger_js_start[];
 #ifdef BUILDER
 extern char _binary_lib_build_js_end[];
 extern char _binary_lib_build_js_start[];
@@ -36,10 +38,12 @@ void InitModules(Isolate* isolate, Local<ObjectTemplate> just) {
   just_builtins_add("inspector", _binary_lib_inspector_js_start, _binary_lib_inspector_js_end - _binary_lib_inspector_js_start);
   just_builtins_add("websocket", _binary_lib_websocket_js_start, _binary_lib_websocket_js_end - _binary_lib_websocket_js_start);
   just_builtins_add("fs", _binary_lib_fs_js_start, _binary_lib_fs_js_end - _binary_lib_fs_js_start);
+  // todo: this should not be a builtin
   just_builtins_add("just", _binary_just_js_start, _binary_just_js_end - _binary_just_js_start);
   just_builtins_add("path", _binary_lib_path_js_start, _binary_lib_path_js_end - _binary_lib_path_js_start);
   just_builtins_add("loop", _binary_lib_loop_js_start, _binary_lib_loop_js_end - _binary_lib_loop_js_start);
   just_builtins_add("require", _binary_lib_require_js_start, _binary_lib_require_js_end - _binary_lib_require_js_start);
+  just_builtins_add("debugger", _binary_debugger_js_start, _binary_debugger_js_end - _binary_debugger_js_start);
 #ifdef BUILDER
   just_builtins_add("build", _binary_lib_build_js_start, _binary_lib_build_js_end - _binary_lib_build_js_start);
 #endif

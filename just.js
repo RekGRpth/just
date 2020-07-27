@@ -149,12 +149,6 @@ function main () {
   const loop = factory.create(1024)
   just.factory.loop = loop
   just.createLoop = createLoop
-  let waitForInspector = false
-  just.args = just.args.filter(arg => {
-    const found = (arg === '--inspector')
-    if (found) waitForInspector = true
-    return !found
-  })
   const { args } = just
   if (just.workerSource) {
     just.path.scriptName = just.path.join(sys.cwd(), args[0] || 'thread')
@@ -202,21 +196,8 @@ function main () {
     factory.run()
     return
   }
-  if (waitForInspector) {
-    const inspectorModule = just.require('inspector')
-    if (!inspectorModule) throw new Error('inspector not enabled')
-    just.error('waiting for inspector...')
-    global.inspector = inspectorModule.createInspector({
-      title: 'Just!',
-      onReady: () => {
-        just.path.scriptName = just.path.join(sys.cwd(), args[1])
-        runScript(fs.readFile(args[1]), just.path.scriptName)
-      }
-    })
-  } else {
-    just.path.scriptName = just.path.join(sys.cwd(), args[1])
-    runScript(fs.readFile(args[1]), just.path.scriptName)
-  }
+  just.path.scriptName = just.path.join(sys.cwd(), args[1])
+  runScript(fs.readFile(args[1]), just.path.scriptName)
   factory.run()
 }
 

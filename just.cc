@@ -2388,6 +2388,7 @@ void just::InitModules(Isolate* isolate, Local<ObjectTemplate> just) {
   inspector::Init(isolate, just);
   sha1::Init(isolate, just);
   encode::Init(isolate, just);
+  // todo: passing InitModules here is kinda ugly
   thread::Init(isolate, just, InitModules);
   signals::Init(isolate, just);
   udp::Init(isolate, just);
@@ -2462,9 +2463,17 @@ int just::CreateIsolate(int argc, char** argv, InitModulesCallback InitModules,
         js_len).ToLocalChecked()).Check();
     }
     TryCatch try_catch(isolate);
+    builtin* main;
+    Local<String> scriptName;
+    if (argc > 1 && strcmp(argv[1], "--inspector") == 0) {
+      scriptName = String::NewFromUtf8Literal(isolate, "debugger.js", NewStringType::kNormal);
+      main = builtins["debugger"];
+    } else {
+      scriptName = String::NewFromUtf8Literal(isolate, "just.js", NewStringType::kNormal);
+      main = builtins["just"];
+    }
     ScriptOrigin baseorigin(
-      String::NewFromUtf8Literal(isolate, "just.js", 
-      NewStringType::kNormal), // resource name
+      scriptName, // resource name
       Integer::New(isolate, 0), // line offset
       Integer::New(isolate, 0),  // column offset
       False(isolate), // is shared cross-origin
@@ -2476,7 +2485,6 @@ int just::CreateIsolate(int argc, char** argv, InitModulesCallback InitModules,
     );
     Local<Module> module;
     Local<String> base;
-    builtin* main = builtins["just"];
     if (main == nullptr) {
       return 1;
     }
