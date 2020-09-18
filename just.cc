@@ -1,4 +1,5 @@
 #include "just.h"
+#include <linux/limits.h>
 
 just::inspector::InspectorClient* client;
 static just::InitModulesCallback initModules;
